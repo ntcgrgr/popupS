@@ -15,7 +15,7 @@
             }
 
             // trail all classes divided by periods
-            _each(['additionalBaseClass', 'additionalButtonHolderClass', 'additionalButtonOkClass', 'additionalButtonCancelClass', 'additionalCloseBtnClass', 'additionalFormClass', 'additionalOverlayClass', 'additionalPopupClass'], function(option) {
+            _each(['additionalBaseClass', 'additionalButtonHolderClass', 'additionalButtonOkClass', 'additionalButtonCancelClass', 'additionalCloseBtnClass', 'additionalFormClass', 'additionalOverlayClass', 'additionalPopupClass', 'additionalBtnDividerClass'], function(option) {
                 var string = options[option].split(' ').join('.');
                 options[option] = '.' + string;
             });
@@ -138,7 +138,7 @@
             }
         },
         _createPopup: function(item) {
-            var btnOk, btnCancel, htmlObj;
+            var btnOk, btnCancel, btnDivider, htmlObj;
             var mode        = item.mode;
             var title       = item.title;
             var content     = item.content;
@@ -153,11 +153,19 @@
 
             btnOk = {
                 tag:  'button#popupS-button-ok.' + this.options.baseClassName + '-button-ok' + (this.options.additionalButtonOkClass ? this.options.additionalButtonOkClass : ''),
-                text: this.options.labelOk };
+                text: this.options.labelOk, html: this.options.btnOk
+            };
             btnCancel = {
                 tag:  'button#popupS-button-cancel.' + this.options.baseClassName + '-button-ok' + (this.options.additionalButtonCancelClass ? this.options.additionalButtonCancelClass : ''),
-                text: this.options.labelCancel };
+                text: this.options.labelCancel, html: this.options.btnCancel
+            };
+            btnDivider = {
+                tag: 'div#popupS-button-divider.' + this.options.baseClassName + '-button-divider' + this.options.additionalBtnDividerClass,
+            }
 
+            var buttonGroup = this.options.showBtnDivider
+                ? [btnOk, btnDivider, btnCancel]
+                : [btnOk, btnCancel];
             htmlObj = [
                 { html: content },
                 mode != 'modal' && mode != 'modal-ajax' && mode == 'prompt' && {
@@ -174,7 +182,7 @@
                   children:
                     (
                         (mode == 'prompt' || mode == 'confirm')
-                            ? (!this.options.flagButtonReverse ? [btnCancel, btnOk] : [btnOk, btnCancel] )
+                            ? (!this.options.flagButtonReverse ? buttonGroup.reverse() : buttonGroup )
                             : [btnOk]
                     )
                 }

@@ -7,6 +7,7 @@
         additionalFormClass: '',
         additionalOverlayClass: '',
         additionalPopupClass: '',
+        additionalBtnDividerClass: '',
         appendLocation: (document.body || document.documentElement),
         baseClassName: 'popupS',
         closeBtn: '&times;',
@@ -16,7 +17,10 @@
         flagCloseByOverlay: true,
         flagShowCloseBtn: true,
         labelOk: 'OK',
+        btnOk: null,
         labelCancel: 'Cancel',
+        btnCancel: null,
+        showBtnDivider: false,
         loader: 'spinner',
         zIndex: 10000
     };

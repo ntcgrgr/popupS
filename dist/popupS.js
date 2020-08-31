@@ -26,6 +26,7 @@
         additionalFormClass: '',
         additionalOverlayClass: '',
         additionalPopupClass: '',
+        additionalBtnDividerClass: '',
         appendLocation: (document.body || document.documentElement),
         baseClassName: 'popupS',
         closeBtn: '&times;',
@@ -35,7 +36,10 @@
         flagCloseByOverlay: true,
         flagShowCloseBtn: true,
         labelOk: 'OK',
+        btnOk: null,
         labelCancel: 'Cancel',
+        btnCancel: null,
+        showBtnDivider: false,
         loader: 'spinner',
         zIndex: 10000
     }
@@ -87,7 +91,7 @@
             }
 
             // trail all classes divided by periods
-            _each(['additionalBaseClass', 'additionalButtonHolderClass', 'additionalButtonOkClass', 'additionalButtonCancelClass', 'additionalCloseBtnClass', 'additionalFormClass', 'additionalOverlayClass', 'additionalPopupClass'], function(option) {
+            _each(['additionalBaseClass', 'additionalButtonHolderClass', 'additionalButtonOkClass', 'additionalButtonCancelClass', 'additionalCloseBtnClass', 'additionalFormClass', 'additionalOverlayClass', 'additionalPopupClass', 'additionalBtnDividerClass'], function(option) {
                 var string = options[option].split(' ').join('.');
                 options[option] = '.' + string;
             });
@@ -210,7 +214,7 @@
             }
         },
         _createPopup: function(item) {
-            var btnOk, btnCancel, htmlObj;
+            var btnOk, btnCancel, btnDivider, htmlObj;
             var mode        = item.mode;
             var title       = item.title;
             var content     = item.content;
@@ -225,10 +229,17 @@
 
             btnOk = {
                 tag:  'button#popupS-button-ok.' + this.options.baseClassName + '-button-ok' + (this.options.additionalButtonOkClass ? this.options.additionalButtonOkClass : ''),
-                text: this.options.labelOk };
+                text: this.options.labelOk, html: this.options.btnOk };
             btnCancel = {
                 tag:  'button#popupS-button-cancel.' + this.options.baseClassName + '-button-ok' + (this.options.additionalButtonCancelClass ? this.options.additionalButtonCancelClass : ''),
-                text: this.options.labelCancel };
+                text: this.options.labelCancel, html: this.options.btnCancel };
+            btnDivider = {
+                tag: 'div#popupS-button-divider.' + this.options.baseClassName + '-button-divider' + this.options.additionalBtnDividerClass,
+            }
+
+            var buttonGroup = this.options.showBtnDivider
+                ? [btnOk, btnDivider, btnCancel]
+                : [btnOk, btnCancel];
 
             htmlObj = [
                 { html: content },
@@ -236,27 +247,27 @@
                     tag: 'form.' + this.options.baseClassName + '-form' + (this.options.additionalFormClass ? this.options.additionalFormClass : ''),
                     children: [
                         item.placeholder && { tag:     'label',
-                          htmlFor: 'popupS-input',
-                          text:    item.placeholder },
+                            htmlFor: 'popupS-input',
+                            text:    item.placeholder },
                         { tag:  'input#popupS-input',
-                          type: 'text' }
+                            type: 'text' }
                     ]
                 },
                 mode != 'modal' && mode != 'modal-ajax' && { tag: 'nav.' + this.options.baseClassName + '-buttons' + (this.options.additionalButtonHolderClass ? this.options.additionalButtonHolderClass : ''),
-                  children:
-                    (
-                        (mode == 'prompt' || mode == 'confirm')
-                            ? (!this.options.flagButtonReverse ? [btnCancel, btnOk] : [btnOk, btnCancel] )
-                            : [btnOk]
-                    )
+                    children:
+                        (
+                            (mode == 'prompt' || mode == 'confirm')
+                                ? (!this.options.flagButtonReverse ? buttonGroup.reverse() : buttonGroup )
+                                : [btnOk]
+                        )
                 }
             ];
 
             content = _buildDOM({
                 children:[
                     { tag: 'a#popupS-resetFocusBack.' + this.options.baseClassName + '-resetFocus',
-                      href:'#',
-                      text:'Reset Focus' },
+                        href:'#',
+                        text:'Reset Focus' },
                     (this.options.flagShowCloseBtn && {
                         tag: 'span#popupS-close.' + this.options.baseClassName + '-close' + (this.options.additionalCloseBtnClass ? this.options.additionalCloseBtnClass : ''),
                         html: this.options.closeBtn
@@ -265,10 +276,10 @@
                         tag:  'h5.' + this.options.baseClassName + '-title' + className,
                         text: title }),
                     { tag:      '.' + this.options.baseClassName + '-content' + className,
-                      children: (contentObj && content || htmlObj) },
+                        children: (contentObj && content || htmlObj) },
                     { tag:'a#popupS-resetFocus.' + this.options.baseClassName + '-resetFocus',
-                      href:'#',
-                      text:'Reset Focus'}
+                        href:'#',
+                        text:'Reset Focus'}
                 ]
             });
 
@@ -692,7 +703,7 @@
      *
      * @const   {RegExp}
      */
-    // orig: /^(\w+)?(#\w+)?((?:\.[\w_-]+)*)/i;
+        // orig: /^(\w+)?(#\w+)?((?:\.[\w_-]+)*)/i;
     var R_SELECTOR = /^(\w+)?(#[\w_-]+)?((?:\.[\w_-]+)*)/i;
 
     /**
