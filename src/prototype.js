@@ -169,7 +169,7 @@
             htmlObj = [
                 { html: content },
                 mode != 'modal' && mode != 'modal-ajax' && mode == 'prompt' && {
-                    tag: 'form.' + this.options.baseClassName + '-form' + (this.options.additionalFormClass ? this.options.additionalFormClass : ''),
+                    tag: 'div.' + this.options.baseClassName + '-prompt',
                     children: [
                         item.placeholder && { tag:     'label',
                           htmlFor: 'popupS-input',
